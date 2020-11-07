@@ -71,10 +71,10 @@ print(dataset.shape)
 # (3774, 12)
 
 # making object into categorical variables
-dataset['type'] = dataset['type'].astype('object')
-dataset['country'] = dataset['country'].astype('object')
-dataset['listed_in'] = dataset['listed_in'].astype('object')
-dataset['rating'] = dataset['rating'].astype('object')
+dataset['type'] = dataset['type'].astype('category')
+dataset['country'] = dataset['country'].astype('category')
+dataset['listed_in'] = dataset['listed_in'].astype('category')
+dataset['rating'] = dataset['rating'].astype('category')
 
 # checking data to check that all objects have been changed to categorical variables.
 dataset.info()
@@ -116,10 +116,26 @@ THere are also a lot of NULL values for director and cast members, which I will 
 # Preparing Genres
 # =============================================================================
 
+# new data frame with split value columns 
+new_listed_in= dataset["listed_in"].str.split(", ", n = 6, expand = True) 
+# making separate first listed_in column from new data frame 
+dataset["first listed_in"]= new_listed_in[0]
+# making separate second listed_in column from new data frame 
+dataset["second listed_in"]= new_listed_in[1] 
+# making separate third listed_in column from new data frame 
+dataset["third listed_in"]= new_listed_in[2] 
+
+
+'''
+Not efficient. Need to create a loop for the function. 
+got the idea from https://www.geeksforgeeks.org/python-pandas-split-strings-into-two-list-columns-using-str-split/
+'''
+
 '''
 # After many hours of (what seemed like) an impossible tasks of splitting the column hunting, 
 # I ran into this code: https://www.kaggle.com/subinium/storytelling-with-data-netflix-ver
 # the use of LAMBDA is important!!!!
+# Most practise the use of Lamdba more!
 '''
 
 
@@ -129,16 +145,6 @@ for i in dataset['genre']: Types += i
 Types = set(Types)
 
 print(dataset['genre'])
-
-
-
-dataset['countries'] = dataset['country'].apply(lambda x :  x.replace(' ,',',').replace(', ',',').split(',')) 
-Countries = []
-for i in dataset['genre']: Countries += i
-Countries = set(Countries)
-
-print(dataset['countries'])
-
 
 # =============================================================================
 # Examining countries that produced films
@@ -155,7 +161,6 @@ plt.title('Breakdown of Countries', fontsize = 16)
 plt.ylabel('count', fontsize = 14)
 plt.xlabel('States', fontsize = 14)
 plt.show()
-
 
 # =============================================================================
 # Examining Rating
