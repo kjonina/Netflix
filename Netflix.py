@@ -50,6 +50,26 @@ print(dataset.info())
 # checking for missing data
 dataset.isnull().sum() 
 
+# dropping null value columns to avoid errors 
+# You cant create a code to autofill the string data
+dataset.dropna(inplace = True) 
+#show_id            0
+#type               0
+#title              0
+#director        1969
+#cast             570
+#country          476
+#date_added        11
+#release_year       0
+#rating            10
+#duration           0
+#listed_in          0
+#description        0
+
+# checking the dataset shape
+print(dataset.shape)
+# (3774, 12)
+
 # making object into categorical variables
 dataset['type'] = dataset['type'].astype('category')
 dataset['country'] = dataset['country'].astype('category')
@@ -73,6 +93,124 @@ dataset['date_added'] =  pd.to_datetime(dataset['date_added'],
 
 
 print(dataset.info())
+
+
+
+# =============================================================================
+# Preparing data
+# =============================================================================
+'''
+Upon further inspection of the data,it was noted that the following columns need to be split.
+# countries,
+# director
+# cast,
+# listed_in
+
+Also date_added and release_year are not the same year.
+
+THere are also a lot of NULL values for director and cast members, which I will have to decided what to do with 
+
+'''
+
+# =============================================================================
+# Preparing Directors
+# =============================================================================
+
+
+# new data frame with split value columns 
+new_director = dataset["director"].str.split(", ", n = 6, expand = True) 
+
+# making separate first director column from new data frame 
+dataset["first director"]= new_director[0]
+# making separate second director column from new data frame 
+dataset["second director"]= new_director[1] 
+# making separate third director column from new data frame 
+dataset["third director"]= new_director[2] 
+# making separate fourth director column from new data frame 
+dataset["fourth director"]= new_director[3] 
+# making separate fifth director column from new data frame 
+dataset["fifth director"]= new_director[4] 
+# making separate fifth director column from new data frame 
+dataset["sixth director"]= new_director[5] 
+
+
+
+# new data frame with split value columns 
+new_cast = dataset["cast"].str.split(", ", n = 10, expand = True) 
+# making separate first cast column from new data frame 
+dataset["first cast"]= new_cast[0]
+# making separate second cast column from new data frame 
+dataset["second cast"]= new_cast[1] 
+# making separate third cast column from new data frame 
+dataset["third cast"]= new_cast[2] 
+# making separate fourth cast column from new data frame 
+dataset["fourth cast"]= new_cast[3] 
+# making separate fifth cast column from new data frame 
+dataset["fifth cast"]= new_cast[4] 
+# making separate sixth cast column from new data frame 
+dataset["sixth cast"]= new_cast[5] 
+# making separate seventh cast column from new data frame 
+dataset["seventh cast"]= new_cast[6] 
+# making separate eighth cast column from new data frame 
+dataset["eighth cast"]= new_cast[7] 
+# making separate ninth cast column from new data frame 
+dataset["ninth cast"]= new_cast[8] 
+# making separate tenth cast column from new data frame 
+dataset["tenth cast"]= new_cast[9] 
+# making separate eleventh cast column from new data frame 
+dataset["eleventh cast"]= new_cast[10] 
+
+
+
+
+
+# new data frame with split value columns 
+new_countries = dataset["country"].str.split(", ", n = 6, expand = True) 
+# making separate first director column from new data frame 
+dataset["first country"]= new_countries[0]
+# making separate second director column from new data frame 
+dataset["second country"]= new_countries[1] 
+# making separate third director column from new data frame 
+dataset["third country"]= new_countries[2] 
+# making separate fourth director column from new data frame 
+dataset["fourth country"]= new_countries[3] 
+# making separate fifth director column from new data frame 
+dataset["fifth country"]= new_countries[4] 
+# making separate fifth director column from new data frame 
+dataset["sixth country"]= new_countries[5] 
+
+
+
+
+
+
+# new data frame with split value columns 
+new_listed_in= dataset["listed_in"].str.split(", ", n = 6, expand = True) 
+# making separate first listed_in column from new data frame 
+dataset["first listed_in"]= new_listed_in[0]
+# making separate second listed_in column from new data frame 
+dataset["second listed_in"]= new_listed_in[1] 
+# making separate third listed_in column from new data frame 
+dataset["third listed_in"]= new_listed_in[2] 
+
+
+
+# Dropping old Name columns 
+dataset.drop(columns =['director'], inplace = True) 
+# Dropping old Name columns 
+dataset.drop(columns =["cast"], inplace = True) 
+# Dropping old Name columns 
+dataset.drop(columns =["listed_in"], inplace = True) 
+# Dropping old Name columns 
+dataset.drop(columns =["country"], inplace = True) 
+
+
+dataset['result'] = pd.concat([dataset["first listed_in", dataset["second listed_in"], dataset["third listed_in"]], axis=1, sort=False)
+
+'''
+Not efficient. Need to create a loop for the function. 
+got the idea from https://www.geeksforgeeks.org/python-pandas-split-strings-into-two-list-columns-using-str-split/
+'''
 
 # =============================================================================
 # Examining countries that produced films
@@ -216,15 +354,36 @@ plt.show()
 
 
 # =============================================================================
+# Attempting to draw a map
+# =============================================================================
+# libraries
+import mpl_toolkits
+from mpl_toolkits.basemap import Basemap
+import matplotlib.pyplot as plt
+
+# Always start witht the basemap function to initialize a map
+m=Basemap()
+
+# Then add element: draw coast line, map boundary, and fill continents:
+m.drawcoastlines()
+m.drawmapboundary()
+m.fillcontinents()
+
+
+# =============================================================================
 # Other interesting points to identify
 # =============================================================================
 
 # do a stacked barchart by country and Type
+
+# create a map of the world with saturation
+
 # split duration by Seasons and minutes for Movies and TV Shows
 
 # examine release dates
 # examine release dates and titles (Christmas Movies released at Christmas etc.)
 # examine the description
+
 # run a Machine Learning Algorithm to predict Rating based on listed_in and title and description
     # so kids movies get catergorised as kids movies and adult movies are categorised as kids movies.
 #Split the director and cast and analyse by them. (eg. Jennifer Aniston mostly stars in comedies)
