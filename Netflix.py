@@ -287,6 +287,43 @@ plt.title('Breakdown of release_year', fontdict = None, position = [0.48,1], siz
 plt.show()
 
 
+
+# =============================================================================
+# Splitting Movie and TV shows
+# =============================================================================
+
+movie = dataset[dataset['type'] == 'Movie']
+tv_show = dataset[dataset['type'] == 'TV Show']
+
+movie['duration'] = movie['duration'].str.strip(' min')
+movie['duration'] = movie['duration'].astype(int)
+
+print(movie.info())
+
+
+plt.plot(movie['duration'],  color='red', marker='o')
+plt.title('bah', fontsize=14)
+plt.xlabel('Time in Mintures', fontsize=14)
+plt.ylabel('Number of Movies', fontsize=14)
+plt.grid(True)
+plt.show()
+
+# sort off
+movie['duration'].value_counts().plot()
+
+#better
+movie['duration'].hist() 
+
+# examining TV show seasons
+plt.figure(figsize = (12, 8))
+sns.countplot(x = 'duration', data = dataset, palette = 'viridis', order = tv_show['duration'].value_counts().head(25).index)
+plt.xticks(rotation = 90)
+plt.title('Breakdown of Top 25 listed_in', fontsize = 16)
+plt.ylabel('count', fontsize = 14)
+plt.xlabel('release_year', fontsize = 14)
+plt.show()
+
+
 # =============================================================================
 # Attempting to draw a map
 # =============================================================================
