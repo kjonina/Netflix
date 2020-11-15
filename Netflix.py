@@ -10,6 +10,7 @@ import pandas as pd
 import matplotlib.pyplot as plt
 import seaborn as sns
 import datetime
+import calendar
 from io import StringIO # This is used for fast string concatination
 import nltk # Use nltk for valid words
 import collections as co # Need to make hash 'dictionaries' from nltk for fast processing
@@ -21,109 +22,238 @@ from sklearn.feature_extraction.text import CountVectorizer #Bag of Words
 
 
 
-# The dataset used was collected from the following website:
+# The df used was collected from the following website:
 # https://www.kaggle.com/shivamb/netflix-shows
 
 # read the CSV file
-dataset = pd.read_csv('netflix_titles.csv')
+df = pd.read_csv('netflix_titles.csv')
 
 # Will ensure that all columns are displayed
 pd.set_option('display.max_columns', None) 
 
 # prints out the top 5 values for the datasef
-print(dataset.head())
+print(df.head())
 
-# checking the dataset shape
-print(dataset.shape)
+# checking the df shape
+print(df.shape)
 # (6234, 12)
 
 
 # prints out names of columns
-print(dataset.columns)
+print(df.columns)
 
 # This tells us which variables are object, int64 and float 64. This would mean that 
 # some of the object variables might have to be changed into a categorical variables and int64 to float64 
 # depending on our analysis.
-print(dataset.info())
+print(df.info())
 
 
 # checking for missing data
-dataset.isnull().sum() 
+df.isnull().sum() 
 
 # dropping null value columns to avoid errors 
 # You cant create a code to autofill the string data
-dataset.dropna(inplace = True) 
+df.dropna(inplace = True) 
 #show_id            0
-#type               0
-#title              0
-#director        1969
-#cast             570
-#country          476
-#date_added        11
-#release_year       0
-#rating            10
-#duration           0
-#listed_in          0
-#description        0
+# Type               0
+# Title              0
+# director        1969
+# cast             570
+# country          476
+# date_added        11
+# release_year       0
+# rating            10
+# duration           0
+# listed_in          0
+# description        0
 
-# checking the dataset shape
-print(dataset.shape)
+# checking the df shape
+print(df.shape)
 # (3774, 12)
 
 # making object into categorical variables
-dataset['type'] = dataset['type'].astype('category')
-dataset['country'] = dataset['country'].astype('category')
-dataset['listed_in'] = dataset['listed_in'].astype('category')
-dataset['rating'] = dataset['rating'].astype('category')
+df['type'] = df['type'].astype('category')
+df['country'] = df['country'].astype('category')
+df['listed_in'] = df['listed_in'].astype('category')
+df['rating'] = df['rating'].astype('category')
 
 # checking data to check that all objects have been changed to categorical variables.
-dataset.info()
+df.info()
 
 
 # =============================================================================
 # Converting 'date_added' to datetime
 # =============================================================================
+# changing date to dateime
+df['date_added'] = pd.to_datetime(df['date_added'], utc = True)
 
-dataset['date_added'] = dataset['date_added'].astype('datetime64')
+# just getting the date
+df['date_added'] = df['date_added'].dt.date
 
-# Complete the call to convert the date column
-# Displayed  September 9, 2019 
-dataset['date_added'] =  pd.to_datetime(dataset['date_added'],
-                              format='%B %d, %Y')
+#Get the year from date_added
+df['year_added'] = pd.DatetimeIndex(df['date_added']).year
+
+# creating a new variable, examining how new are the films on Netflix
+df['new_or_old'] = df['year_added'] - df['release_year']
+
+# =============================================================================
+# Splitting Movie and TV shows
+# =============================================================================
+
+movie = df[df['type'] == 'Movie']
+tv_show = df[df['type'] == 'TV Show']
+
+movie['duration'] = movie['duration'].str.strip(' min')
+movie['duration'] = movie['duration'].astype(int)
 
 
-print(dataset.info())
+# =============================================================================
+# Examining Rating
+# =============================================================================
+df['rating'].unique()
+
+# table to cretat
+df['rating'].value_counts()
+
+
+# Examines the ratings 
+plt.figure(figsize = (12, 8))
+sns.countplot(x = 'rating', data = df, palette = 'viridis', order = df['rating'].value_counts().index)
+plt.xticks(rotation = 90)
+plt.title('Breakdown of Rating', fontsize = 16)
+plt.ylabel('count', fontsize = 14)
+plt.xlabel('Ratings', fontsize = 14)
+plt.show()
+
+# =============================================================================
+# Examining type
+# =============================================================================
+df['type'].unique()
+
+# tables
+df.groupby(['type']).size().sort_values(ascending=False)
+# Movie      4265
+# TV Show    1969
+
+# Examines the ratings 
+plt.figure(figsize = (12, 8))
+sns.countplot(x = 'type', data = df, palette = 'viridis')
+plt.xticks(rotation = 90)
+plt.title('Breakdown of Type', fontsize = 16)
+plt.ylabel('count', fontsize = 14)
+plt.xlabel('Type', fontsize = 14)
+plt.show()
+
+# creates a pie chart 
+fig = plt.figure(figsize = (20,10))
+labels = df['type'].value_counts().head(25).index.tolist()
+sizes = df['type'].value_counts().head(25).tolist()
+plt.pie(sizes, labels = labels, autopct = '%1.1f%%',
+        shadow = False, startangle = 30)
+plt.title('Breakdown of Type', fontdict = None, position = [0.48,1], size = 'xx-large')
+plt.show()
+
+
+# =============================================================================
+# Examining listed_in
+# =============================================================================
+df['listed_in'].unique()
+
+df.groupby(['listed_in']).size().sort_values(ascending=False)
+# Movie      4265
+# TV Show    1969
+
+# Examines the ratings 
+plt.figure(figsize = (12, 8))
+sns.countplot(x = 'listed_in', data = df, palette = 'viridis', order = df['listed_in'].value_counts().head(25).index)
+plt.xticks(rotation = 90)
+plt.title('Breakdown of Top 25 listed_in', fontsize = 16)
+plt.ylabel('count', fontsize = 14)
+plt.xlabel('listed_in', fontsize = 14)
+plt.show()
+
+# creates a pie chart 
+fig = plt.figure(figsize = (20,10))
+labels = df['listed_in'].value_counts().head(25).index.tolist()
+sizes = df['listed_in'].value_counts().head(25).tolist()
+plt.pie(sizes, labels = labels, autopct = '%1.1f%%',
+        shadow = False, startangle = 30)
+plt.title('Breakdown of listed_in', fontdict = None, position = [0.48,1], size = 'xx-large')
+plt.show()
+
+
+# =============================================================================
+# Examining release_year
+# =============================================================================
+df['release_year'].unique()
+
+df.groupby(['release_year']).size().sort_values(ascending=False)
+# Movie      4265
+# TV Show    1969
+
+# Examines the ratings 
+plt.figure(figsize = (12, 8))
+sns.countplot(x = 'release_year', data = df, palette = 'viridis', order = df['release_year'].value_counts().head(25).index)
+plt.xticks(rotation = 90)
+plt.title('Breakdown of Top 25 listed_in', fontsize = 16)
+plt.ylabel('count', fontsize = 14)
+plt.xlabel('release_year', fontsize = 14)
+plt.show()
+
+# creates a pie chart 
+fig = plt.figure(figsize = (20,10))
+labels = df['release_year'].value_counts().head(25).index.tolist()
+sizes = df['release_year'].value_counts().head(25).tolist()
+plt.pie(sizes, labels = labels, autopct = '%1.1f%%',
+        shadow = False, startangle = 30)
+plt.title('Breakdown of release_year', fontdict = None, position = [0.48,1], size = 'xx-large')
+plt.show()
+
+
+
 
 
 
 # =============================================================================
-# Preparing data
+# How long are most movies?
 # =============================================================================
-'''
-Upon further inspection of the data,it was noted that the following columns need to be split.
-# countries,
-# director
-# cast,
-# listed_in
 
-Also date_added and release_year are not the same year.
 
-THere are also a lot of NULL values for director and cast members, which I will have to decided what to do with 
+# creating a diagrams
+movie['duration'].hist() 
 
-'''
+# examining the mean and sd, max and min
+movie['duration'].describe()
+
+shortest_film = 12
+if movie['duration'] == 12 :
+    print(movie['title'])
+
+# =============================================================================
+# How many Seasons do most TV Shows have?
+# =============================================================================
+# examining TV show seasons
+plt.figure(figsize = (12, 8))
+sns.countplot(x = 'duration', data = df, palette = 'viridis', order = tv_show['duration'].value_counts().head(25).index)
+plt.xticks(rotation = 90)
+plt.title('How many Seasons do most TV Shows have?', fontsize = 16)
+plt.ylabel('count', fontsize = 14)
+plt.xlabel('Seasons', fontsize = 14)
+plt.show()
+
 
 # =============================================================================
 # Preparing Genres
 # =============================================================================
 
 # new data frame with split value columns 
-new_listed_in= dataset["listed_in"].str.split(", ", n = 6, expand = True) 
+new_listed_in= df["listed_in"].str.split(", ", n = 6, expand = True) 
 # making separate first listed_in column from new data frame 
-dataset["first listed_in"]= new_listed_in[0]
+df["first listed_in"]= new_listed_in[0]
 # making separate second listed_in column from new data frame 
-dataset["second listed_in"]= new_listed_in[1] 
+df["second listed_in"]= new_listed_in[1] 
 # making separate third listed_in column from new data frame 
-dataset["third listed_in"]= new_listed_in[2] 
+df["third listed_in"]= new_listed_in[2] 
 
 
 '''
@@ -139,211 +269,43 @@ got the idea from https://www.geeksforgeeks.org/python-pandas-split-strings-into
 '''
 
 
-dataset['genre'] = dataset['listed_in'].apply(lambda x :  x.replace(' ,',',').replace(', ',',').split(',')) 
+df['genre'] = df['listed_in'].apply(lambda x :  x.replace(' ,',',').replace(', ',',').split(',')) 
 Types = []
-for i in dataset['genre']: Types += i
+for i in df['genre']: Types += i
 Types = set(Types)
 
-print(dataset['genre'])
+print(df['genre'])
 
 # =============================================================================
 # Examining countries that produced films
 # =============================================================================
-dataset['country'].unique()
+df['country'].unique()
 
-dataset.groupby(['country']).size().sort_values(ascending=False)
+country = df['country'].value_counts().head(25)
+
+
+country.head(15).plot(kind = 'barh')
 
 # Examines the top 25 countries that have complaints
 plt.figure(figsize = (12, 8))
-sns.countplot(x = 'country', data = dataset, palette = 'viridis', order = dataset['country'].value_counts().head(25).index)
+sns.countplot(x = 'country', data = df, palette = 'viridis', order = df['country'].value_counts().head(25).index)
 plt.xticks(rotation = 90)
 plt.title('Breakdown of Countries', fontsize = 16)
 plt.ylabel('count', fontsize = 14)
-plt.xlabel('States', fontsize = 14)
+plt.xlabel('Countries', fontsize = 14)
 plt.show()
-
-# =============================================================================
-# Examining Rating
-# =============================================================================
-dataset['rating'].unique()
-
-dataset.groupby(['rating']).size().sort_values(ascending=False)
-#TV-MA       2027
-#TV-14       1698
-#TV-PG        701
-#R            508
-#PG-13        286
-#NR           218
-#PG           184
-#TV-Y7        169
-#TV-G         149
-#TV-Y         143
-#TV-Y7-FV      95
-#G             37
-#UR             7
-#NC-17          2
-
-# Examines the ratings 
-plt.figure(figsize = (12, 8))
-sns.countplot(x = 'rating', data = dataset, palette = 'viridis', order = dataset['rating'].value_counts().index)
-plt.xticks(rotation = 90)
-plt.title('Breakdown of Rating', fontsize = 16)
-plt.ylabel('count', fontsize = 14)
-plt.xlabel('Ratings', fontsize = 14)
-plt.show()
-
-# creates a pie chart 
-fig = plt.figure(figsize = (20,10))
-labels = dataset['rating'].value_counts().head(25).index.tolist()
-sizes = dataset['rating'].value_counts().head(25).tolist()
-plt.pie(sizes, labels = labels, autopct = '%1.1f%%',
-        shadow = False, startangle = 30)
-plt.title('Breakdown of rating', fontdict = None, position = [0.48,1], size = 'xx-large')
-plt.show()
-
-
-
-# =============================================================================
-# Examining type
-# =============================================================================
-dataset['type'].unique()
-
-dataset.groupby(['type']).size().sort_values(ascending=False)
-#Movie      4265
-#TV Show    1969
-
-# Examines the ratings 
-plt.figure(figsize = (12, 8))
-sns.countplot(x = 'type', data = dataset, palette = 'viridis', order = dataset['type'].value_counts().index)
-plt.xticks(rotation = 90)
-plt.title('Breakdown of Type', fontsize = 16)
-plt.ylabel('count', fontsize = 14)
-plt.xlabel('Type', fontsize = 14)
-plt.show()
-
-# creates a pie chart 
-fig = plt.figure(figsize = (20,10))
-labels = dataset['type'].value_counts().head(25).index.tolist()
-sizes = dataset['type'].value_counts().head(25).tolist()
-plt.pie(sizes, labels = labels, autopct = '%1.1f%%',
-        shadow = False, startangle = 30)
-plt.title('Breakdown of Type', fontdict = None, position = [0.48,1], size = 'xx-large')
-plt.show()
-
-
-# =============================================================================
-# Examining listed_in
-# =============================================================================
-dataset['listed_in'].unique()
-
-dataset.groupby(['listed_in']).size().sort_values(ascending=False)
-#Movie      4265
-#TV Show    1969
-
-# Examines the ratings 
-plt.figure(figsize = (12, 8))
-sns.countplot(x = 'listed_in', data = dataset, palette = 'viridis', order = dataset['listed_in'].value_counts().head(25).index)
-plt.xticks(rotation = 90)
-plt.title('Breakdown of Top 25 listed_in', fontsize = 16)
-plt.ylabel('count', fontsize = 14)
-plt.xlabel('listed_in', fontsize = 14)
-plt.show()
-
-# creates a pie chart 
-fig = plt.figure(figsize = (20,10))
-labels = dataset['listed_in'].value_counts().head(25).index.tolist()
-sizes = dataset['listed_in'].value_counts().head(25).tolist()
-plt.pie(sizes, labels = labels, autopct = '%1.1f%%',
-        shadow = False, startangle = 30)
-plt.title('Breakdown of listed_in', fontdict = None, position = [0.48,1], size = 'xx-large')
-plt.show()
-
-
-# =============================================================================
-# Examining release_year
-# =============================================================================
-dataset['release_year'].unique()
-
-dataset.groupby(['release_year']).size().sort_values(ascending=False)
-#Movie      4265
-#TV Show    1969
-
-# Examines the ratings 
-plt.figure(figsize = (12, 8))
-sns.countplot(x = 'release_year', data = dataset, palette = 'viridis', order = dataset['release_year'].value_counts().head(25).index)
-plt.xticks(rotation = 90)
-plt.title('Breakdown of Top 25 listed_in', fontsize = 16)
-plt.ylabel('count', fontsize = 14)
-plt.xlabel('release_year', fontsize = 14)
-plt.show()
-
-# creates a pie chart 
-fig = plt.figure(figsize = (20,10))
-labels = dataset['release_year'].value_counts().head(25).index.tolist()
-sizes = dataset['release_year'].value_counts().head(25).tolist()
-plt.pie(sizes, labels = labels, autopct = '%1.1f%%',
-        shadow = False, startangle = 30)
-plt.title('Breakdown of release_year', fontdict = None, position = [0.48,1], size = 'xx-large')
-plt.show()
-
-
-
-# =============================================================================
-# Splitting Movie and TV shows
-# =============================================================================
-
-movie = dataset[dataset['type'] == 'Movie']
-tv_show = dataset[dataset['type'] == 'TV Show']
-
-movie['duration'] = movie['duration'].str.strip(' min')
-movie['duration'] = movie['duration'].astype(int)
-
-print(movie.info())
-
-
-plt.plot(movie['duration'],  color='red', marker='o')
-plt.title('bah', fontsize=14)
-plt.xlabel('Time in Mintures', fontsize=14)
-plt.ylabel('Number of Movies', fontsize=14)
-plt.grid(True)
-plt.show()
-
-# sort off
-movie['duration'].value_counts().plot()
-
-#better
-movie['duration'].hist() 
-
-# examining TV show seasons
-plt.figure(figsize = (12, 8))
-sns.countplot(x = 'duration', data = dataset, palette = 'viridis', order = tv_show['duration'].value_counts().head(25).index)
-plt.xticks(rotation = 90)
-plt.title('Breakdown of Top 25 listed_in', fontsize = 16)
-plt.ylabel('count', fontsize = 14)
-plt.xlabel('release_year', fontsize = 14)
-plt.show()
-
-
-# =============================================================================
-# Attempting to draw a map
-# =============================================================================
-# libraries
-import mpl_toolkits
-from mpl_toolkits.basemap import Basemap
-import matplotlib.pyplot as plt
-
-# Always start witht the basemap function to initialize a map
-m=Basemap()
-
-# Then add element: draw coast line, map boundary, and fill continents:
-m.drawcoastlines()
-m.drawmapboundary()
-m.fillcontinents()
 
 
 # =============================================================================
 # Other interesting points to identify
 # =============================================================================
+#Upon further inspection of the data,it was noted that the following columns need to be split.
+## countries,
+## director
+## cast,
+## listed_in
+#
+# THere are also a lot of NULL values for director and cast members, which I will have to decided what to do with 
 
 # do a stacked barchart by country and Type
 
