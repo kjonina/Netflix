@@ -112,7 +112,7 @@ movie['duration'] = movie['duration'].astype(int)
 # =============================================================================
 df['rating'].unique()
 
-# table to cretat
+# create a table
 df['rating'].value_counts()
 
 
@@ -187,46 +187,63 @@ plt.show()
 # =============================================================================
 df['release_year'].unique()
 
+# create a table for the view
 df.groupby(['release_year']).size().sort_values(ascending=False)
-# Movie      4265
-# TV Show    1969
+
 
 # Examines the ratings 
 plt.figure(figsize = (12, 8))
-sns.countplot(x = 'release_year', data = df, palette = 'viridis', order = df['release_year'].value_counts().head(25).index)
+sns.countplot(x = 'release_year', data = df, palette = 'magma', order = df['release_year'].value_counts().head(25).index)
 plt.xticks(rotation = 90)
-plt.title('Breakdown of Top 25 listed_in', fontsize = 16)
+plt.title('How much fresh content does Netflix have?', fontsize = 16)
 plt.ylabel('count', fontsize = 14)
-plt.xlabel('release_year', fontsize = 14)
-plt.show()
-
-# creates a pie chart 
-fig = plt.figure(figsize = (20,10))
-labels = df['release_year'].value_counts().head(25).index.tolist()
-sizes = df['release_year'].value_counts().head(25).tolist()
-plt.pie(sizes, labels = labels, autopct = '%1.1f%%',
-        shadow = False, startangle = 30)
-plt.title('Breakdown of release_year', fontdict = None, position = [0.48,1], size = 'xx-large')
+plt.xlabel('Release Year', fontsize = 14)
 plt.show()
 
 
+# =============================================================================
+# Examining how quick are the 
+# =============================================================================
+df['new_or_old'].unique()
+
+df['new_or_old'].value_counts()
+
+# create a table for the view
+df.groupby(['new_or_old']).size().sort_values(ascending=False)
 
 
-
+# Examines the ratings 
+plt.figure(figsize = (12, 8))
+sns.countplot(x = 'new_or_old', data = df, palette = 'magma', order = df['new_or_old'].value_counts().head(20).index)
+plt.xticks(rotation = 90)
+plt.title('How long does it take Netflix to add content to its website?', fontsize = 16)
+plt.ylabel('count', fontsize = 14)
+plt.xlabel('Difference in Years', fontsize = 14)
+plt.show()
 
 # =============================================================================
 # How long are most movies?
 # =============================================================================
-
-
 # creating a diagrams
 movie['duration'].hist() 
 
 # examining the mean and sd, max and min
 movie['duration'].describe()
 
-shortest_film = 12
-if movie['duration'] == 12 :
+
+movie_duration = movie['duration'].value_counts()
+
+fig = plt.figure(figsize = (20,10))
+sns.lineplot(data = movie_duration)
+plt.title('Movie Durations', fontsize = 16)
+plt.ylabel('count', fontsize = 14)
+plt.xlabel('Duration in Minutes', fontsize = 14)
+plt.show()
+
+
+
+# trying to find shortest Movie 
+if movie['duration'] == 12:
     print(movie['title'])
 
 # =============================================================================
