@@ -1,8 +1,8 @@
-"""
+'''
 Name:               Karina Jonina 
 Github:             https://github.com/kjonina/
 Data Gathered:      https://www.kaggle.com/shivamb/netflix-shows
-"""
+'''
 
 
 import numpy as np
@@ -15,7 +15,7 @@ from io import StringIO # This is used for fast string concatination
 import nltk # Use nltk for valid words
 import collections as co # Need to make hash 'dictionaries' from nltk for fast processing
 import warnings # current version of seaborn generates a bunch of warnings that we'll ignore
-warnings.filterwarnings("ignore")
+warnings.filterwarnings('ignore')
 import seaborn as sns
 from wordcloud import WordCloud
 from sklearn.feature_extraction.text import CountVectorizer #Bag of Words
@@ -125,6 +125,36 @@ plt.ylabel('count', fontsize = 14)
 plt.xlabel('Ratings', fontsize = 14)
 plt.show()
 
+
+# =============================================================================
+# Examining Ratings by Type
+# =============================================================================
+
+ratings_type = pd.DataFrame({'A': df['type'],
+                   'B': df['rating']})
+
+print(ratings_type)
+
+ratings_type_df_pivot = pd.pivot_table(
+        ratings_type, index = ['A'], columns = ['B'], aggfunc=len)
+
+print(ratings_type_df_pivot)
+
+
+plt.figure(figsize = (12, 8))
+sns.catplot(x = 'A', hue = 'B', kind = 'count', palette = 'pastel', edgecolor = '.6', data = ratings_type)
+plt.title('Breakdown of Ratings by Content Type', fontsize = 16)
+plt.ylabel('count', fontsize = 14)
+plt.xlabel('Rating', fontsize = 14)
+
+
+plt.figure(figsize = (12, 8))
+sns.countplot(y = 'B', hue = 'A', palette = 'pastel', edgecolor = '.6', data = ratings_type)
+plt.title('Breakdown of Ratings by Content Type', fontsize = 20)
+plt.xticks(rotation = 90)
+plt.ylabel('count', fontsize = 14)
+plt.xlabel('Rating', fontsize = 14)
+
 # =============================================================================
 # Examining type
 # =============================================================================
@@ -172,14 +202,6 @@ plt.ylabel('count', fontsize = 14)
 plt.xlabel('listed_in', fontsize = 14)
 plt.show()
 
-# creates a pie chart 
-fig = plt.figure(figsize = (20,10))
-labels = df['listed_in'].value_counts().head(25).index.tolist()
-sizes = df['listed_in'].value_counts().head(25).tolist()
-plt.pie(sizes, labels = labels, autopct = '%1.1f%%',
-        shadow = False, startangle = 30)
-plt.title('Breakdown of listed_in', fontdict = None, position = [0.48,1], size = 'xx-large')
-plt.show()
 
 
 # =============================================================================
@@ -264,13 +286,13 @@ plt.show()
 # =============================================================================
 
 # new data frame with split value columns 
-new_listed_in= df["listed_in"].str.split(", ", n = 6, expand = True) 
+new_listed_in= df['listed_in'].str.split(', ', n = 6, expand = True) 
 # making separate first listed_in column from new data frame 
-df["first listed_in"]= new_listed_in[0]
+df['first listed_in']= new_listed_in[0]
 # making separate second listed_in column from new data frame 
-df["second listed_in"]= new_listed_in[1] 
+df['second listed_in']= new_listed_in[1] 
 # making separate third listed_in column from new data frame 
-df["third listed_in"]= new_listed_in[2] 
+df['third listed_in']= new_listed_in[2] 
 
 
 '''

@@ -4,14 +4,15 @@ This dataset consists of tv shows and movies available on Netflix as of 2019. Th
 
 # Learning Outcomes
 Following my analysis of my [Netflix Viewing Habits](https://github.com/kjonina/personal_Netflix/blob/main/README.md), I decided to continue my quest to analyse data and update README.md on datasets that I have not yet finished.
-I have a lot of holes in my knowledge
+I have a lot of holes in my knowledge so I decided to outline some learning outcomes for myself:
 
-I am aiming to:
-- [ ] deal with parts of code I struggle with: loc, iloc splitting text data, creating linegraph and horizontal barcharts. 
+The purpose of this analysis for myself is to: 
+- [ ] deal with parts of code I struggle with: loc, iloc splitting text data, creating linegraph and horizontal barcharts, barcharts by a category. 
 - [ ] filter and split data (['Director',  'Cast', 'Genre']
 - [ ] run analysis on ['Title', 'Description']
 - [ ] create a predictive model for Ratings 
-
+- [ ] continue fancy-schmancy code to update README.md such as links to external url and links, etc. 
+- [ ] use GITHUB regularly to update code as I work on this project
 - [ ] Hopefully update it to Kaggle?
 
 ### Variables
@@ -22,18 +23,17 @@ New Variables:
 
 The dataset was also split by **'Movie'** and **'TV_Shows'**
 
-
 ## Exploring EDA
-
-**What are some of the most common TV-Ratings?**
-
-![Ratings](https://github.com/kjonina/Netflix/blob/master/Graphs/Ratings.png)
 
 **What is more commonly found: Movies or TV Shows?**
 
 ![Types](https://github.com/kjonina/Netflix/blob/master/Graphs/Types.png)
 
-![Types](https://github.com/kjonina/Netflix/blob/master/Graphs/Pie_Types.png)
+TV Shows make up over two-thirds of contents on Netflix (68.4% - TV Shows, 31.6% - Movies). 
+
+**What are some of the most common TV-Ratings?**
+
+![Ratings](https://github.com/kjonina/Netflix/blob/master/Graphs/Ratings.png)
 
 **When were the most TV shows/ Movies released?**
 
@@ -42,6 +42,14 @@ The dataset was also split by **'Movie'** and **'TV_Shows'**
 **How new are additions on Netflix?**
 
 ![new_or_old](https://github.com/kjonina/Netflix/blob/master/Graphs/new_or_old.png)
+
+Most content is uploaded onto Netflix within 0 - 2 years of its initial release. Unfortunatly, month of the release_year was not supplied so it is not very accurate representation.
+For Example: a movie could have been release in November and uploaded on Netflix in February, which means the time difference is 4 months, not 1 year.
+
+Furthermore: it is unclear whether the content with 0 years between release_year and year_added is Netflix produced.
+
+One way to found it is to create code to examine that compares contents to Netflix produced. 
+- but that is for later. 
 
 **How long are most movies?**
 ![movie_d](https://github.com/kjonina/Netflix/blob/master/Graphs/movie_d.png)
