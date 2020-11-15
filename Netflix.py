@@ -149,7 +149,7 @@ plt.xlabel('Rating', fontsize = 14)
 
 
 plt.figure(figsize = (12, 8))
-sns.countplot(y = 'B', hue = 'A', palette = 'pastel', edgecolor = '.6', data = ratings_type)
+sns.countplot(y = 'B', hue = 'A', palette = 'pastel', data = ratings_type)
 plt.title('Breakdown of Ratings by Content Type', fontsize = 20)
 plt.xticks(rotation = 90)
 plt.ylabel('count', fontsize = 14)
@@ -168,10 +168,9 @@ df.groupby(['type']).size().sort_values(ascending=False)
 # Examines the ratings 
 plt.figure(figsize = (12, 8))
 sns.countplot(x = 'type', data = df, palette = 'viridis')
-plt.xticks(rotation = 90)
-plt.title('Breakdown of Type', fontsize = 16)
+plt.title('Breakdown of Content Type', fontsize = 20)
 plt.ylabel('count', fontsize = 14)
-plt.xlabel('Type', fontsize = 14)
+plt.xlabel('Content Type', fontsize = 14)
 plt.show()
 
 # creates a pie chart 
@@ -215,11 +214,10 @@ df.groupby(['release_year']).size().sort_values(ascending=False)
 
 # Examines the ratings 
 plt.figure(figsize = (12, 8))
-sns.countplot(x = 'release_year', data = df, palette = 'magma', order = df['release_year'].value_counts().head(25).index)
-plt.xticks(rotation = 90)
+sns.countplot(y = 'release_year', data = df, palette = 'magma', order = df['release_year'].value_counts().head(25).index)
 plt.title('How much fresh content does Netflix have?', fontsize = 16)
-plt.ylabel('count', fontsize = 14)
-plt.xlabel('Release Year', fontsize = 14)
+plt.ylabel('Release Year', fontsize = 14)
+plt.xlabel('count', fontsize = 14)
 plt.show()
 
 
@@ -233,12 +231,15 @@ df['new_or_old'].value_counts()
 # create a table for the view
 df.groupby(['new_or_old']).size().sort_values(ascending=False)
 
+df.info()
+df['new_or_old'] = df['new_or_old'].fillna(-1)
+
+df['new_or_old'] = df['new_or_old'].astype(int)
 
 # Examines the ratings 
 plt.figure(figsize = (12, 8))
-sns.countplot(x = 'new_or_old', data = df, palette = 'magma', order = df['new_or_old'].value_counts().head(20).index)
-plt.xticks(rotation = 90)
-plt.title('How long does it take Netflix to add content to its website?', fontsize = 16)
+sns.countplot(y = 'new_or_old', data = df, palette = 'magma', order = df['new_or_old'].value_counts().head(20).index)
+plt.title('How long does it take Netflix to add content to its website?', fontsize = 20)
 plt.ylabel('count', fontsize = 14)
 plt.xlabel('Difference in Years', fontsize = 14)
 plt.show()
@@ -273,9 +274,8 @@ if movie['duration'] == 12:
 # =============================================================================
 # examining TV show seasons
 plt.figure(figsize = (12, 8))
-sns.countplot(x = 'duration', data = df, palette = 'viridis', order = tv_show['duration'].value_counts().head(25).index)
-plt.xticks(rotation = 90)
-plt.title('How many Seasons do most TV Shows have?', fontsize = 16)
+sns.countplot(y = 'duration', data = df, palette = 'viridis', order = tv_show['duration'].value_counts().head(25).index)
+plt.title('How many Seasons do most TV Shows have?', fontsize = 20)
 plt.ylabel('count', fontsize = 14)
 plt.xlabel('Seasons', fontsize = 14)
 plt.show()
