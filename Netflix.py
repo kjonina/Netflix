@@ -146,16 +146,15 @@ print(ratings_type_df_pivot)
 plt.figure(figsize = (12, 8))
 sns.catplot(x = 'A', hue = 'B', kind = 'count', palette = 'pastel', edgecolor = '.6', data = ratings_type)
 plt.title('Breakdown of Ratings by Content Type', fontsize = 16)
-plt.ylabel('count', fontsize = 14)
-plt.xlabel('Rating', fontsize = 14)
+plt.ylabel('Rating', fontsize = 14)
+plt.xlabel('count', fontsize = 14)
 
 
 plt.figure(figsize = (12, 8))
 sns.countplot(y = 'B', hue = 'A', palette = 'pastel', data = ratings_type)
 plt.title('Breakdown of Ratings by Content Type', fontsize = 20)
-plt.xticks(rotation = 90)
-plt.ylabel('count', fontsize = 14)
-plt.xlabel('Rating', fontsize = 14)
+plt.ylabel('Rating', fontsize = 14)
+plt.xlabel('count', fontsize = 14)
 
 # =============================================================================
 # Examining type
@@ -224,8 +223,8 @@ sns.set()
 plt.figure(figsize = (12, 8))
 sns.countplot(y = 'new_or_old', data = df, palette = 'magma', order = df['new_or_old'].value_counts().head(20).index)
 plt.title('How long does it take Netflix to add content to its website?', fontsize = 20)
-plt.ylabel('count', fontsize = 14)
-plt.xlabel('Difference in Years', fontsize = 14)
+plt.ylabel('Difference in Years', fontsize = 14)
+plt.xlabel('count', fontsize = 14)
 plt.show()
 
 # =============================================================================
@@ -260,8 +259,8 @@ if movie['duration'] == 12:
 plt.figure(figsize = (12, 8))
 sns.countplot(y = 'duration', data = df, palette = 'viridis', order = tv_show['duration'].value_counts().head(25).index)
 plt.title('How many Seasons do most TV Shows have?', fontsize = 20)
-plt.ylabel('count', fontsize = 14)
-plt.xlabel('Seasons', fontsize = 14)
+plt.ylabel('Seasons', fontsize = 14)
+plt.xlabel('count', fontsize = 14)
 plt.show()
 
 
