@@ -58,4 +58,45 @@ An average film on Netflix rather long (M = 102 minutes, SD = 26 minutes).
 The shortest film on Netflix is 12 minutes and the longest is 228 minutes.
 
 **How many Seasons do most TV Shows have?**
+
 ![seasons](https://github.com/kjonina/Netflix/blob/master/Graphs/seasons.png)
+
+
+
+## Next Questions to anwer: 
+
+**What are the most common words in TV Show Movie description?**
+
+
+**What are the most genre?**
+
+
+
+
+
+
+
+ =============================================================================
+ Other interesting points to identify
+ =============================================================================
+Upon further inspection of the data,it was noted that the following columns need to be split.
+# countries,
+# director
+# cast,
+# listed_in
+
+ THere are also a lot of NULL values for director and cast members, which I will have to decided what to do with 
+
+ do a stacked barchart by country and Type
+
+ create a map of the world with saturation
+
+ split duration by Seasons and minutes for Movies and TV Shows
+
+ examine release dates
+ examine release dates and titles (Christmas Movies released at Christmas etc.)
+ examine the description
+
+ run a Machine Learning Algorithm to predict Rating based on listed_in and title and description
+     so kids movies get catergorised as kids movies and adult movies are categorised as kids movies.
+Split the director and cast and analyse by them. (eg. Jennifer Aniston mostly stars in comedies)
